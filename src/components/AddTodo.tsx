@@ -12,6 +12,8 @@ export function AddTodo() {
     dispatch(add({
       newTodo,
     }))
+
+    setNewTodo('')
   }
 
   return (
