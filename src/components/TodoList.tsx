@@ -1,8 +1,13 @@
+import { useSelector } from "react-redux"
+
 export function TodoList() {
+  const todos = useSelector(store => {
+    return store.todo
+  })
+
   return (
     <ul>
-      <li>Study Redux</li>
-      <li>Study React</li>
+      {todos.map(todo => <li key={todo}>{todo}</li>)}
     </ul>
   )
 }
