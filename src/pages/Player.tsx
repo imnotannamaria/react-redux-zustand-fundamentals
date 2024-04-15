@@ -1,5 +1,5 @@
 export function Player() {
   return (
-    <div>Player</div>
+    <div className="bg-black text-white font-bold">Player</div>
   )
 }
