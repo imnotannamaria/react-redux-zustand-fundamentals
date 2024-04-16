@@ -1,53 +1,52 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { useAppSelector } from "..";
 
-export const playerSlice = createSlice({
-  name: 'player',
-  initialState: {
-    course: {
-      modules: [
-        {
-          id: '1',
-          title: 'Starting with React',
-          lessons: [
-            { id: 'Jai8w6K_GnY', title: 'CSS Modules', duration: '13:45' },
-            { id: 'w-DW4DhDfcw', title: 'Post Styling', duration: '10:05' },
-            { id: 'D83-55LUdKE', title: 'Header Component', duration: '06:33' },
-            { id: 'W_ATsETujaY', title: 'Sidebar Component', duration: '09:12' },
-            { id: 'Pj8dPeameYo', title: 'Global CSS', duration: '03:23' },
-            { id: '8KBq2vhwbac', title: 'Comments Form', duration: '11:34' },
-          ],
-        },
-        {
-          id: '2',
-          title: 'Application Structure',
-          lessons: [
-            { id: 'gE48FQXRZ_o', title: 'Comment Component', duration: '13:45' },
-            { id: 'Ng_Vk4tBl0g', title: 'Responsiveness', duration: '10:05' },
-            { id: 'h5JA3wfuW1k', title: 'Interactions in JSX', duration: '06:33' },
-            { id: '1G0vSTqWELg', title: 'Using State', duration: '09:12' },
-          ],
-        },
-    ],
-  },
+interface Course  {
+  id: number
+  modules: Array<{
+    id: number
+    title: string
+    lessons: Array<{
+      id: string
+      title: string
+      duration: string
+    }>;
+  }>;
+}
+
+export interface PlayerState {
+  course: Course | null
+  currentModuleIndex: number
+  currentLesssonIndex: number
+}
+
+const initialState: PlayerState = {
+  course: null,
   currentModuleIndex: 0,
   currentLesssonIndex: 0,
-},
+}
+
+export const playerSlice = createSlice({
+  name: 'player',
+  initialState,
   reducers: {
+    start(state, action:PayloadAction<Course>) {
+      state.course = action.payload
+    },
     play: (state, action: PayloadAction<[number, number]>) => {
       state.currentModuleIndex = action.payload[0]
       state.currentLesssonIndex = action.payload[1]
     },
     next: (state) => {
       const nextLessonIndex = state.currentLesssonIndex + 1
-      const nextLesson = state.course.modules[state.currentModuleIndex].lessons[nextLessonIndex]
+      const nextLesson = state.course?.modules[state.currentModuleIndex].lessons[nextLessonIndex]
       
       if (nextLesson) {
         state.currentLesssonIndex = nextLessonIndex
       }
       else {
         const nextModuleIndex = state.currentModuleIndex + 1
-        const nextModule = state.course.modules[nextModuleIndex]
+        const nextModule = state.course?.modules[nextModuleIndex]
         
         if (nextModule) {
           state.currentModuleIndex = nextModuleIndex
@@ -59,14 +58,13 @@ export const playerSlice = createSlice({
 })
 
 export const player = playerSlice.reducer
-export const { play } = playerSlice.actions
-export const { next } = playerSlice.actions
+export const { play, next, start } = playerSlice.actions
 
 export const useCurrentLesson = () => {
   return useAppSelector((state) => {
     const { currentModuleIndex, currentLesssonIndex } = state.player;
-    const currentModule = state.player.course.modules[currentModuleIndex];
-    const currentLesson = currentModule.lessons[currentLesssonIndex];
+    const currentModule = state.player.course?.modules[currentModuleIndex];
+    const currentLesson = currentModule?.lessons[currentLesssonIndex];
 
     return { currentModule, currentLesson };
   });
