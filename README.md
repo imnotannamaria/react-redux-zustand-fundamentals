@@ -14,3 +14,15 @@ Reducer - Information that we will share between all components of an applicatio
 Slice - Organize state into smaller chunks
 
 Acctions - All actions that the user can take to change some information within a state
+
+## Run
+
+To run the projet
+
+```bash
+  npm run server
+```
+
+```bash
+  npm run dev
+```
